@@ -5,72 +5,77 @@ func preprocess(s []rune) {
 	s = trimLeftApostrophes(s)
 }
 
-func postprocess() {
-
-}
-
 //remove all the apostrophes 's or ' at the end
-func step0(s []rune) []rune {
+func step0(s []rune, r1Start, r2Start int) ([]rune, int, int) {
 	suffixWithApos := []string{"'s", "'s'", "'"}
+	result := s
 
 	for _, suffix := range suffixWithApos {
 		if isSuffix, index := isSuffix(s, suffix); isSuffix {
-			return s[:index]
+			s = s[:index]
+
+			result = s
 		}
 	}
 
-	return s
+	return result, r1Start, r2Start
 }
 
-func step1a(s []rune) []rune {
-
+func step1a(s []rune, r1Start, r2Start int) ([]rune, int, int) {
 	// Initialize.
-	var result []rune = s
-
 	lenS := len(s)
+	result := s
 
-	// Do it!
-	if suffix := []rune("sses"); hasSuffix(s, suffix) {
+	suffixes := [][]rune{
+		[]rune("sses"), []rune("ies"), []rune("ied"), []rune("ss"), []rune("us"),
+		[]rune("s"),
+	}
 
-		lenTrim := 2
+	if contains, suffix := hasSuffixes(s, suffixes); contains {
+		suffixLen := len(suffix)
+		suffixInString := string(suffix)
 
-		subSlice := s[:lenS-lenTrim]
+		if suffixInString == "sses" {
+			lenWithoutSuffix := lenS - suffixLen
+			s = append(s[:lenWithoutSuffix], []rune("ss"))
 
-		result = subSlice
-	} else if contains, _ := hasSuffixes(s, [][]rune{[]rune("ies"), []rune("ied")}); contains {
-		lenTrim := 1
-		if lenS > 4 {
-			lenTrim = 2
+			r1Start, r2Start = updateR1R2(len(s), r1Start, r2Start)
+			result = s
+		} else if suffixInString == "ies" || suffixInString == "ied" {
+			lenWithoutSuffix := lenS - suffixLen
+			replaceRune := []rune("ie")
+
+			if lenS > 4 {
+				replaceRune = []rune("i")
+			}
+
+			s = append(s[:lenWithoutSuffix], replaceRune...)
+			r1Start, r2Start = updateR1R2(len(s), r1Start, r2Start)
+			result = s
+
+		} else if suffixInString == "ss" || suffixInString == "us" {
+			result = s
+		} else if suffixInString == "s" {
+			for i := 0; i < lenS-2; i++ {
+				if !isConsonant(s[i]) {
+					s = s[:lenS-suffixLen]
+
+					r1Start, r2Start = updateR1R2(len(s), r1Start, r2Start)
+					result = s
+
+				}
+			}
 		}
-
-		subSlice := s[:lenS-lenTrim]
-
-		result = subSlice
-	} else if conatins, _ := hasSuffixes(s, [][]rune{[]rune("ss"), []rune("us")}); conatins {
-
-		result = s
-	} else if suffix := []rune("s"); hasSuffix(s, suffix) {
-		subSlice := s
-
-		if containsVowel(s[:len(s)-2]) {
-			lenSuffix := 1
-			subSlice = s[:lenS-lenSuffix]
-		}
-
-		result = subSlice
 	}
 
 	// Return.
-	return result
+	return result, r1Start, r2Start
 }
 
-func step1b(s []rune) []rune {
-
+func step1b(s []rune, r1Start, r2Start int) ([]rune, int, int) {
 	// Initialize.
-	var result []rune = s
-
 	lenS := len(s)
-	r1Start, _ := getR1andR2Start(s)
+	result := s
 
 	if contains, suffix := hasSuffixes(s, [][]rune{[]rune("eed"), []rune("eedly")}); contains {
 		suffixLen := len(suffix)
@@ -92,13 +97,25 @@ func step1b(s []rune) []rune {
 		suffixLen := len(suffix)
 		subSlice := s
 
+		r1Start, _ := getR1andR2Start(s)
+
 		if containsVowel(s[:lenS-suffixLen]) {
 			//delete the suffix
-
 			s = s[:lenS-suffixLen]
 
-			if contains, _ := hasSuffixes(s, [][]rune{[]rune("at"), []rune("bl"), []rune("iz")}); contains {
+			//reset r1Start
+			if r1Start > len(s) {
+				r1Start = len(s)
+			}
 
+			if contains, _ := hasSuffixes(s, [][]rune{[]rune("at"), []rune("bl"), []rune("iz")}); contains {
+				s = append(s, []rune("e")...)
+			} else if contains, _ := hasSuffixes(s, [][]rune{[]rune("bb"), []rune("dd"), []rune("ff"), []rune("gg"), []rune("mm"), []rune("nn"), []rune("pp"), []rune("rr"), []rune("tt")}); contains {
+				s = s[:len(s)-1]
+			} else {
+				if isShortWord(s, r1Start) {
+					s = append(s, []rune("e")...)
+				}
 			}
 		}
 
@@ -106,468 +123,219 @@ func step1b(s []rune) []rune {
 	}
 
 	// Return.
-	return result
+	return result, r1Start, r2Start
 }
 
-func step1c(s []rune) []rune {
-
+func step1c(s []rune, r1Start, r2Start int) ([]rune, int, int) {
 	// Initialize.
 	lenS := len(s)
-
 	result := s
 
-	// Do it!
-	if 2 > lenS {
-		/////////// RETURN
-		return result
-	}
-
-	if 'y' == s[lenS-1] && containsVowel(s[:lenS-1]) {
-
-		result[lenS-1] = 'i'
-
-	} else if 'Y' == s[lenS-1] && containsVowel(s[:lenS-1]) {
-
-		result[lenS-1] = 'I'
-
+	//if the last letter is a y, then replace it with a 'i'
+	if lenS > 2 && s[lenS-1] == 121 && isConsonant(s, lenS-2) {
+		s[lenS-1] = 105
+		result = s
 	}
 
 	// Return.
 	return result
 }
 
-func step2(s []rune) []rune {
-
+func step2(s []rune, r1Start, r2Start int) ([]rune, int, int) {
 	// Initialize.
 	lenS := len(s)
-
 	result := s
 
-	// Do it!
-	if suffix := []rune("ational"); hasSuffix(s, suffix) {
-		if 0 < measure(s[:lenS-len(suffix)]) {
-			result[lenS-5] = 'e'
-			result = result[:lenS-4]
-		}
-	} else if suffix := []rune("tional"); hasSuffix(s, suffix) {
-		if 0 < measure(s[:lenS-len(suffix)]) {
-			result = result[:lenS-2]
-		}
-	} else if suffix := []rune("enci"); hasSuffix(s, suffix) {
-		if 0 < measure(s[:lenS-len(suffix)]) {
-			result[lenS-1] = 'e'
-		}
-	} else if suffix := []rune("anci"); hasSuffix(s, suffix) {
-		if 0 < measure(s[:lenS-len(suffix)]) {
-			result[lenS-1] = 'e'
-		}
-	} else if suffix := []rune("izer"); hasSuffix(s, suffix) {
-		if 0 < measure(s[:lenS-len(suffix)]) {
-			result = s[:lenS-1]
-		}
-	} else if suffix := []rune("bli"); hasSuffix(s, suffix) { // --DEPARTURE--
-		//		} else if suffix := []rune("abli") ; hasSuffix(s, suffix) {
-		if 0 < measure(s[:lenS-len(suffix)]) {
-			result[lenS-1] = 'e'
-		}
-	} else if suffix := []rune("alli"); hasSuffix(s, suffix) {
-		if 0 < measure(s[:lenS-len(suffix)]) {
-			result = s[:lenS-2]
-		}
-	} else if suffix := []rune("entli"); hasSuffix(s, suffix) {
-		if 0 < measure(s[:lenS-len(suffix)]) {
-			result = s[:lenS-2]
-		}
-	} else if suffix := []rune("eli"); hasSuffix(s, suffix) {
-		if 0 < measure(s[:lenS-len(suffix)]) {
-			result = s[:lenS-2]
-		}
-	} else if suffix := []rune("ousli"); hasSuffix(s, suffix) {
-		if 0 < measure(s[:lenS-len(suffix)]) {
-			result = s[:lenS-2]
-		}
-	} else if suffix := []rune("ization"); hasSuffix(s, suffix) {
-		if 0 < measure(s[:lenS-len(suffix)]) {
-			result[lenS-5] = 'e'
+	suffixes := [][]rune{
+		[]rune("ational"), []rune("fulness"), []rune("iveness"), []rune("ization"), []rune("ousness"),
+		[]rune("biliti"), []rune("lessli"), []rune("tional"), []rune("alism"), []rune("aliti"), []rune("ation"),
+		[]rune("entli"), []rune("fulli"), []rune("iviti"), []rune("ousli"), []rune("anci"), []rune("abli"),
+		[]rune("alli"), []rune("ator"), []rune("enci"), []rune("izer"), []rune("bli"), []rune("ogi"), []rune("li"),
+	}
 
-			result = s[:lenS-4]
-		}
-	} else if suffix := []rune("ation"); hasSuffix(s, suffix) {
-		if 0 < measure(s[:lenS-len(suffix)]) {
-			result[lenS-3] = 'e'
+	replaceMap := map[string]string{
+		"tional":  "tion",
+		"enci":    "ence",
+		"anci":    "ance",
+		"abli":    "able",
+		"entli":   "ent",
+		"izer":    "ize",
+		"ization": "ize",
+		"ational": "ate",
+		"ation":   "ate",
+		"ator":    "ate",
+		"alism":   "al",
+		"aliti":   "al",
+		"alli":    "al",
+		"fulness": "ful",
+		"ousli":   "ous",
+		"ousness": "ous",
+		"iveness": "ive",
+		"iviti":   "ive",
+		"biliti":  "ble",
+		"bli":     "ble",
+		"fulli":   "ful",
+		"lessli":  "less",
+	}
 
-			result = s[:lenS-2]
-		}
-	} else if suffix := []rune("ator"); hasSuffix(s, suffix) {
-		if 0 < measure(s[:lenS-len(suffix)]) {
-			result[lenS-2] = 'e'
+	liChs := map[rune]bool{
+		99: true, 100: true, 101: true, 103: true, 104: true, 107: true, 109: true, 110: true, 114: true, 116: true,
+	}
 
-			result = s[:lenS-1]
-		}
-	} else if suffix := []rune("alism"); hasSuffix(s, suffix) {
-		if 0 < measure(s[:lenS-len(suffix)]) {
-			result = s[:lenS-3]
-		}
-	} else if suffix := []rune("iveness"); hasSuffix(s, suffix) {
-		if 0 < measure(s[:lenS-len(suffix)]) {
-			result = s[:lenS-4]
-		}
-	} else if suffix := []rune("fulness"); hasSuffix(s, suffix) {
-		if 0 < measure(s[:lenS-len(suffix)]) {
-			result = s[:lenS-4]
-		}
-	} else if suffix := []rune("ousness"); hasSuffix(s, suffix) {
-		if 0 < measure(s[:lenS-len(suffix)]) {
-			result = s[:lenS-4]
-		}
-	} else if suffix := []rune("aliti"); hasSuffix(s, suffix) {
-		if 0 < measure(s[:lenS-len(suffix)]) {
-			result = s[:lenS-3]
-		}
-	} else if suffix := []rune("iviti"); hasSuffix(s, suffix) {
-		if 0 < measure(s[:lenS-len(suffix)]) {
-			result[lenS-3] = 'e'
+	if contains, suffix := hasSuffixes(s, suffixes); contains {
+		suffixLen := len(suffix)
+		suffixInString := string(suffix)
 
-			result = result[:lenS-2]
-		}
-	} else if suffix := []rune("biliti"); hasSuffix(s, suffix) {
-		if 0 < measure(s[:lenS-len(suffix)]) {
-			result[lenS-5] = 'l'
-			result[lenS-4] = 'e'
+		if suffixLen <= lenS-r1Start {
+			if suffixInString == "li" {
+				if lenS >= 3 {
+					if _, ok := liChs[s[lenS-3]]; ok {
+						s = s[:lenS-suffixLen]
 
-			result = result[:lenS-3]
-		}
-	} else if suffix := []rune("logi"); hasSuffix(s, suffix) { // --DEPARTURE--
-		if 0 < measure(s[:lenS-len(suffix)]) {
-			lenTrim := 1
+						r1Start, r2Start = updateR1R2(len(s), r1Start, r2Start)
+						result = s
+					}
+				}
 
-			result = s[:lenS-lenTrim]
+			} else if suffixInString == "ogi" {
+				if lenS >= 4 && s[lenS-4] == 108 {
+					lenWithoutSuffix := lenS - suffixLen
+					s = append(s[:lenWithoutSuffix], []rune("og")...)
+
+					r1Start, r2Start = updateR1R2(len(s), r1Start, r2Start)
+					result = s
+				}
+
+			} else {
+				if replacementSuffix, ok := replaceMap[suffixInString]; ok {
+					replacementSuffixInRune := []rune(replacementSuffix)
+					lenWithoutSuffix := lenS - suffixLen
+					s = append(s[:lenWithoutSuffix], replacementSuffixInRune...)
+
+					r1Start, r2Start = updateR1R2(len(s), r1Start, r2Start)
+					result = s
+				}
+
+			}
 		}
 	}
 
 	// Return.
-	return result
+	return result, r1Start, r2Start
 }
 
-func step3(s []rune) []rune {
-
+func step3(s []rune, r1Start, r2Start int) ([]rune, int, int) {
 	// Initialize.
 	lenS := len(s)
 	result := s
 
-	// Do it!
-	if suffix := []rune("icate"); hasSuffix(s, suffix) {
-		lenSuffix := len(suffix)
+	suffixes := [][]rune{
+		[]rune("ational"), []rune("tional"), []rune("alize"), []rune("icate"),
+		[]rune("ative"), []rune("iciti"), []rune("ical"), []rune("ful"),
+		[]rune("ness"),
+	}
 
-		if 0 < measure(s[:lenS-lenSuffix]) {
-			result = result[:lenS-3]
-		}
-	} else if suffix := []rune("ative"); hasSuffix(s, suffix) {
-		lenSuffix := len(suffix)
+	replaceMap := map[string]string{
+		"ational": "ate",
+		"tional":  "tion",
+		"alize":   "al",
+		"icate":   "ic",
+		"iciti":   "ic",
+		"ical":    "ic",
+	}
 
-		subSlice := s[:lenS-lenSuffix]
+	if contains, suffix := hasSuffixes(s, suffixes); contains {
+		suffixLen := len(suffix)
+		suffixInString := string(suffix)
 
-		m := measure(subSlice)
+		if suffixLen <= lenS-r1Start {
+			if suffixInString == "ative" {
+				if lenS-r2Start >= suffixLen {
+					s = s[:lenS-suffixLen]
 
-		if 0 < m {
-			result = subSlice
-		}
-	} else if suffix := []rune("alize"); hasSuffix(s, suffix) {
-		lenSuffix := len(suffix)
+					r1Start, r2Start = updateR1R2(len(s), r1Start, r2Start)
+					result = s
+				}
+			} else if suffixInString == "ful" || suffixInString == "ness" {
+				lenWithoutSuffix := lenS - suffixLen
+				s = s[:lenWithoutSuffix]
 
-		if 0 < measure(s[:lenS-lenSuffix]) {
-			result = result[:lenS-3]
-		}
-	} else if suffix := []rune("iciti"); hasSuffix(s, suffix) {
-		lenSuffix := len(suffix)
+				r1Start, r2Start = updateR1R2(len(s), r1Start, r2Start)
+				result = s
+			} else {
+				if replacementSuffix, ok := replaceMap[suffixInString]; ok {
+					replacementSuffixInRune := []rune(replacementSuffix)
+					lenWithoutSuffix := lenS - suffixLen
 
-		if 0 < measure(s[:lenS-lenSuffix]) {
-			result = result[:lenS-3]
-		}
-	} else if suffix := []rune("ical"); hasSuffix(s, suffix) {
-		lenSuffix := len(suffix)
-
-		if 0 < measure(s[:lenS-lenSuffix]) {
-			result = result[:lenS-2]
-		}
-	} else if suffix := []rune("ful"); hasSuffix(s, suffix) {
-		lenSuffix := len(suffix)
-
-		subSlice := s[:lenS-lenSuffix]
-
-		m := measure(subSlice)
-
-		if 0 < m {
-			result = subSlice
-		}
-	} else if suffix := []rune("ness"); hasSuffix(s, suffix) {
-		lenSuffix := len(suffix)
-
-		subSlice := s[:lenS-lenSuffix]
-
-		m := measure(subSlice)
-
-		if 0 < m {
-			result = subSlice
+					s = append(s[:lenWithoutSuffix], replacementSuffixInRune...)
+					r1Start, r2Start = updateR1R2(len(s), r1Start, r2Start)
+					result = s
+				}
+			}
 		}
 	}
 
 	// Return.
-	return result
+	return result, r1Start, r2Start
 }
 
-func step4(s []rune) []rune {
-
+func step4(s []rune, r1Start, r2Start int) ([]rune, int, int) {
 	// Initialize.
 	lenS := len(s)
 	result := s
 
-	// Do it!
-	if suffix := []rune("al"); hasSuffix(s, suffix) {
-		lenSuffix := len(suffix)
+	suffixes := [][]rune{
+		[]rune("ement"), []rune("ance"), []rune("ence"), []rune("able"), []rune("ible"), []rune("ment"),
+		[]rune("ent"), []rune("ant"), []rune("ism"), []rune("ate"), []rune("iti"), []rune("ous"), []rune("ive"),
+		[]rune("ize"), []rune("ion"), []rune("al"), []rune("er"), []rune("ic"),
+	}
 
-		subSlice := s[:lenS-lenSuffix]
+	if contains, suffix := hasSuffixes(s, suffixes); contains {
+		suffixLen := len(suffix)
+		suffixInString := string(suffix)
 
-		m := measure(subSlice)
+		if suffixLen <= lenS-r2Start {
+			if suffixInString == "ion" {
+				if lenS >= 4 {
+					if s[lenS-4] == 115 || s[lenS-4] == 116 {
+						s := s[:lenS-suffixLen]
 
-		if 1 < m {
-			result = result[:lenS-lenSuffix]
-		}
-	} else if suffix := []rune("ance"); hasSuffix(s, suffix) {
-		lenSuffix := len(suffix)
+						r1Start, r2Start = updateR1R2(len(s), r1Start, r2Start)
+						result = s
+					}
+				}
+			} else {
+				s := s[:lenS-suffixLen]
 
-		subSlice := s[:lenS-lenSuffix]
-
-		m := measure(subSlice)
-
-		if 1 < m {
-			result = result[:lenS-lenSuffix]
-		}
-	} else if suffix := []rune("ence"); hasSuffix(s, suffix) {
-		lenSuffix := len(suffix)
-
-		subSlice := s[:lenS-lenSuffix]
-
-		m := measure(subSlice)
-
-		if 1 < m {
-			result = result[:lenS-lenSuffix]
-		}
-	} else if suffix := []rune("er"); hasSuffix(s, suffix) {
-		lenSuffix := len(suffix)
-
-		subSlice := s[:lenS-lenSuffix]
-
-		m := measure(subSlice)
-
-		if 1 < m {
-			result = subSlice
-		}
-	} else if suffix := []rune("ic"); hasSuffix(s, suffix) {
-		lenSuffix := len(suffix)
-
-		subSlice := s[:lenS-lenSuffix]
-
-		m := measure(subSlice)
-
-		if 1 < m {
-			result = subSlice
-		}
-	} else if suffix := []rune("able"); hasSuffix(s, suffix) {
-		lenSuffix := len(suffix)
-
-		subSlice := s[:lenS-lenSuffix]
-
-		m := measure(subSlice)
-
-		if 1 < m {
-			result = subSlice
-		}
-	} else if suffix := []rune("ible"); hasSuffix(s, suffix) {
-		lenSuffix := len(suffix)
-
-		subSlice := s[:lenS-lenSuffix]
-
-		m := measure(subSlice)
-
-		if 1 < m {
-			result = subSlice
-		}
-	} else if suffix := []rune("ant"); hasSuffix(s, suffix) {
-		lenSuffix := len(suffix)
-
-		subSlice := s[:lenS-lenSuffix]
-
-		m := measure(subSlice)
-
-		if 1 < m {
-			result = subSlice
-		}
-	} else if suffix := []rune("ement"); hasSuffix(s, suffix) {
-		lenSuffix := len(suffix)
-
-		subSlice := s[:lenS-lenSuffix]
-
-		m := measure(subSlice)
-
-		if 1 < m {
-			result = subSlice
-		}
-	} else if suffix := []rune("ment"); hasSuffix(s, suffix) {
-		lenSuffix := len(suffix)
-
-		subSlice := s[:lenS-lenSuffix]
-
-		m := measure(subSlice)
-
-		if 1 < m {
-			result = subSlice
-		}
-	} else if suffix := []rune("ent"); hasSuffix(s, suffix) {
-		lenSuffix := len(suffix)
-
-		subSlice := s[:lenS-lenSuffix]
-
-		m := measure(subSlice)
-
-		if 1 < m {
-			result = subSlice
-		}
-	} else if suffix := []rune("ion"); hasSuffix(s, suffix) {
-		lenSuffix := len(suffix)
-
-		subSlice := s[:lenS-lenSuffix]
-
-		m := measure(subSlice)
-
-		c := subSlice[len(subSlice)-1]
-
-		if 1 < m && ('s' == c || 't' == c) {
-			result = subSlice
-		}
-	} else if suffix := []rune("ou"); hasSuffix(s, suffix) {
-		lenSuffix := len(suffix)
-
-		subSlice := s[:lenS-lenSuffix]
-
-		m := measure(subSlice)
-
-		if 1 < m {
-			result = subSlice
-		}
-	} else if suffix := []rune("ism"); hasSuffix(s, suffix) {
-		lenSuffix := len(suffix)
-
-		subSlice := s[:lenS-lenSuffix]
-
-		m := measure(subSlice)
-
-		if 1 < m {
-			result = subSlice
-		}
-	} else if suffix := []rune("ate"); hasSuffix(s, suffix) {
-		lenSuffix := len(suffix)
-
-		subSlice := s[:lenS-lenSuffix]
-
-		m := measure(subSlice)
-
-		if 1 < m {
-			result = subSlice
-		}
-	} else if suffix := []rune("iti"); hasSuffix(s, suffix) {
-		lenSuffix := len(suffix)
-
-		subSlice := s[:lenS-lenSuffix]
-
-		m := measure(subSlice)
-
-		if 1 < m {
-			result = subSlice
-		}
-	} else if suffix := []rune("ous"); hasSuffix(s, suffix) {
-		lenSuffix := len(suffix)
-
-		subSlice := s[:lenS-lenSuffix]
-
-		m := measure(subSlice)
-
-		if 1 < m {
-			result = subSlice
-		}
-	} else if suffix := []rune("ive"); hasSuffix(s, suffix) {
-		lenSuffix := len(suffix)
-
-		subSlice := s[:lenS-lenSuffix]
-
-		m := measure(subSlice)
-
-		if 1 < m {
-			result = subSlice
-		}
-	} else if suffix := []rune("ize"); hasSuffix(s, suffix) {
-		lenSuffix := len(suffix)
-
-		subSlice := s[:lenS-lenSuffix]
-
-		m := measure(subSlice)
-
-		if 1 < m {
-			result = subSlice
+				r1Start, r2Start = updateR1R2(len(s), r1Start, r2Start)
+				result = s
+			}
 		}
 	}
 
 	// Return.
-	return result
+	return result, r1Start, r2Start
 }
 
-func step5a(s []rune) []rune {
-
+func step5(s []rune, r1Start, r2Start int) ([]rune, int, int) {
 	// Initialize.
 	lenS := len(s)
 	result := s
 
-	// Do it!
-	if 'e' == s[lenS-1] {
-		lenSuffix := 1
+	if r1Start <= lenS-1 {
+		if s[lenS-1] == 101 { //ends with an 'e'
+			if r2Start <= lenS-1 || !endsShortSyllable(s, lenS-1) {
+				s = s[:lenS-1]
 
-		subSlice := s[:lenS-lenSuffix]
-		if len(subSlice) == 0 {
-			return result
-		}
-		m := measure(subSlice)
+				result = s
+			} else if r2Start <= lenS-1 && s[lenS-1] == 108 && lenS-2 >= 0 && s[lenS-2] == 108 {
+				s = s[:lenS-1]
 
-		if 1 < m {
-			result = subSlice
-		} else if c := subSlice[len(subSlice)-1]; 1 == m && !(hasConsonantVowelConsonantSuffix(subSlice) && 'w' != c && 'x' != c && 'y' != c) {
-			result = subSlice
+				result = s
+			}
 		}
 	}
 
 	// Return.
-	return result
-}
-
-func step5b(s []rune) []rune {
-
-	// Initialize.
-	lenS := len(s)
-	result := s
-
-	// Do it!
-	if 2 < lenS && 'l' == s[lenS-2] && 'l' == s[lenS-1] {
-
-		lenSuffix := 1
-
-		subSlice := s[:lenS-lenSuffix]
-
-		m := measure(subSlice)
-
-		if 1 < m {
-			result = subSlice
-		}
-	}
-
-	// Return.
-	return result
+	return result, r1Start, r2Start
 }

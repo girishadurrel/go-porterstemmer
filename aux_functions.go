@@ -22,6 +22,48 @@ func trimLeftApostrophes(s []rune) []rune {
 	return s[index:]
 }
 
+func isShortWord(s []rune, r1Start int) bool {
+	if r1Start < len(s) || endsShortSyllable(s, len(s)) {
+		return true
+	}
+
+	return false
+}
+
+func endsShortSyllable(s []rune, index int) bool {
+	if index == 2 {
+		//starts with a vowel and ends with a consonent, then its true
+		if !isConsonant(s, 0) && isConsonant(s, 1) {
+			return true
+		} else {
+			return false
+		}
+	} else if index >= 3 {
+		s1 := s[index-1]
+
+		//check if s1 is precceded by a vowel is already checked
+		if isConsonant(s, index-1) && s1 != 119 && s1 != 120 && !isConsonant(s, index-2) && isConsonant(s, index-3) {
+			return true
+		} else {
+			return false
+		}
+	}
+
+	return false
+}
+
+func updateR1R2(lenS, r1Start, r2Start int) (int, int) {
+	if r1Start > lenS {
+		r1Start = lenS
+	}
+
+	if r2Start > lenS {
+		r2Start = lenS
+	}
+
+	return r1Start, r2Start
+}
+
 func isSuffix(s []rune, suffix string) (bool, int) {
 	suffixInRune := []rune(suffix)
 	suffixIndex := -1
