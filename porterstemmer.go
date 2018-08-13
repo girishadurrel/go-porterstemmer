@@ -18,7 +18,6 @@ func (e *PorterStemmer) Init(debug, aggrStem bool, ignoreMap map[string]bool) {
 }
 
 func (e *PorterStemmer) StemString(s string) (string, []string) {
-
 	// Convert string to []rune
 	runeArr := []rune(s)
 
@@ -33,84 +32,87 @@ func (e *PorterStemmer) StemString(s string) (string, []string) {
 }
 
 func (e *PorterStemmer) Stem(s []rune) ([]rune, []string) {
-
 	// Initialize.
 	lenS := len(s)
 	debugDetails := make([]string, 0)
 
 	_, doNotStemm := e.ignoreMap[string(s)]
 
-	// Short circuit.
-	if 0 == lenS || doNotStemm {
-		/////////// RETURN
+	if lenS == 0 || doNotStemm {
 		debugDetails = append(debugDetails, fmt.Sprintf("input: %s is in the ignore dict", string(s)))
 		return s, debugDetails
 	}
 
-	// Make all runes lowercase.
 	for i := 0; i < lenS; i++ {
 		s[i] = unicode.ToLower(s[i])
 	}
 
-	// Stem
-	result, debugDetails := e.StemWithoutLowerCasing(s)
+	result, debugDetails := stemEngine(s, e.debug)
 
-	// Return.
 	return result, debugDetails
 }
 
-func (e *PorterStemmer) StemWithoutLowerCasing(s []rune) ([]rune, []string) {
-
+func stemEngine(s []rune, debug bool) ([]rune, []string) {
 	// Initialize.
 	lenS := len(s)
 	debugLines := make([]string, 0)
 
 	// Words that are of length 2 or less is already stemmed.
 	// Don't do anything.
-	if 2 >= lenS {
+	if lenS <= 2 {
 		/////////// RETURN
 		debugLines = append(debugLines, "input less than 2 runs, return")
 		return s, debugLines
 	}
 
 	// Stem
-	if e.debug {
+	if debug {
 		debugLines = append(debugLines, fmt.Sprintf("input: %s", string(s)))
 	}
-	s = step0(s)  // remove all apostrophes
-	s = step1a(s) //endings of nouns (step5a,b is also important for nouns)
-	if e.debug {
-		debugLines = append(debugLines, fmt.Sprintf("after step (1a): %s", string(s)))
+
+	r1Start, r2Start := getR1andR2Start(s)
+	if debug {
+		debugLines = append(debugLines, fmt.Sprintf("r1Start: %d r2Start: %d", r1Start, r2Start))
 	}
 
-	if !e.aggrStem {
-		s = step1b(s) //verb endings that usually end with (ed, ing)
-		s = step1c(s) //anything that ends in 'y', replace with 'i' verbs (adverb)
-		//example play -> plai, lay -> lai etc etc
-		if e.debug {
-			debugLines = append(debugLines, fmt.Sprintf("after step (1b&c): %s", string(s)))
-		}
-
-		s = step2(s)
-		if e.debug {
-			debugLines = append(debugLines, fmt.Sprintf("after step (2): %s", string(s)))
-		}
-
-		s = step3(s)
-		if e.debug {
-			debugLines = append(debugLines, fmt.Sprintf("after step (3): %s", string(s)))
-		}
-
-		s = step4(s)
-		if e.debug {
-			debugLines = append(debugLines, fmt.Sprintf("after step (4): %s", string(s)))
-		}
+	s, r1Start, r2Start = step0(s, r1Start, r2Start) // remove all apostrophes
+	if debug {
+		debugLines = append(debugLines, fmt.Sprintf("after step (0): %s, r1Start: %d r2Start: %d", string(s), r1Start, r2Start))
 	}
 
-	s = step5a(s)
-	s = step5b(s)
-	if e.debug {
-		debugLines = append(debugLines, fmt.Sprintf("after step (5): %s", string(s)))
+	s, r1Start, r2Start = step1a(s, r1Start, r2Start)
+	if debug {
+		debugLines = append(debugLines, fmt.Sprintf("after step (1a): %s r1Start: %d r2Start: %d", string(s), r1Start, r2Start))
+	}
+
+	s, r1Start, r2Start = step1b(s, r1Start, r2Start)
+	if debug {
+		debugLines = append(debugLines, fmt.Sprintf("after step (1b): %s r1Start: %d r2Start: %d", string(s), r1Start, r2Start))
+	}
+
+	s, r1Start, r2Start = step1c(s, r1Start, r2Start)
+	if debug {
+		debugLines = append(debugLines, fmt.Sprintf("after step (1c): %s r1Start: %d r2Start: %d", string(s), r1Start, r2Start))
+	}
+
+	s, r1Start, r2Start = step2(s, r1Start, r2Start)
+	if debug {
+		debugLines = append(debugLines, fmt.Sprintf("after step (2): %s r1Start: %d r2Start: %d", string(s), r1Start, r2Start))
+	}
+
+	s, r1Start, r2Start = step3(s, r1Start, r2Start)
+	if debug {
+		debugLines = append(debugLines, fmt.Sprintf("after step (3): %s r1Start: %d r2Start: %d", string(s), r1Start, r2Start))
+	}
+
+	s, r1Start, r2Start = step4(s, r1Start, r2Start)
+	if debug {
+		debugLines = append(debugLines, fmt.Sprintf("after step (4): %s r1Start: %d r2Start: %d", string(s), r1Start, r2Start))
+	}
+
+	s, r1Start, r2Start = step5(s, r1Start, r2Start)
+	if debug {
+		debugLines = append(debugLines, fmt.Sprintf("after step (5): %s r1Start: %d r2Start: %d", string(s), r1Start, r2Start))
 	}
 
 	// Return.

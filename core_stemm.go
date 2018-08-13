@@ -37,7 +37,7 @@ func step1a(s []rune, r1Start, r2Start int) ([]rune, int, int) {
 
 		if suffixInString == "sses" {
 			lenWithoutSuffix := lenS - suffixLen
-			s = append(s[:lenWithoutSuffix], []rune("ss"))
+			s = append(s[:lenWithoutSuffix], []rune("ss")...)
 
 			r1Start, r2Start = updateR1R2(len(s), r1Start, r2Start)
 			result = s
@@ -57,7 +57,7 @@ func step1a(s []rune, r1Start, r2Start int) ([]rune, int, int) {
 			result = s
 		} else if suffixInString == "s" {
 			for i := 0; i < lenS-2; i++ {
-				if !isConsonant(s[i]) {
+				if !isConsonant(s, i) {
 					s = s[:lenS-suffixLen]
 
 					r1Start, r2Start = updateR1R2(len(s), r1Start, r2Start)
@@ -77,49 +77,82 @@ func step1b(s []rune, r1Start, r2Start int) ([]rune, int, int) {
 	lenS := len(s)
 	result := s
 
-	if contains, suffix := hasSuffixes(s, [][]rune{[]rune("eed"), []rune("eedly")}); contains {
+	orgR1Start := r1Start
+	orgR2Start := r2Start
+
+	suffixes := [][]rune{
+		[]rune("eed"), []rune("eedly"), []rune("ed"), []rune("edly"), []rune("ing"), []rune("ingly"),
+	}
+
+	if contains, suffix := hasSuffixes(s, suffixes); contains {
 		suffixLen := len(suffix)
-		subSlice := s
+		suffixInString := string(suffix)
 
-		//suffix is contained within the r1Start
-		if suffixLen <= lenS-r1Start {
-			lenSuffix := 1
-			if suffixLen == 5 { //"eedly"
-				lenSuffix = 3
+		if suffixInString == "eed" || suffixInString == "eedly" {
+			if suffixLen <= lenS-r1Start {
+				lenWithoutSuffix := lenS - suffixLen
+
+				s = append(s[:lenWithoutSuffix], []rune("ee")...)
+
+				r1Start, r2Start = updateR1R2(len(s), r1Start, r2Start)
+				result = s
 			}
+		} else if suffixInString == "ed" || suffixInString == "edly" || suffixInString == "ing" || suffixInString == "ingly" {
+			lenWithoutSuffix := lenS - suffixLen
 
-			subSlice = s[:lenS-lenSuffix]
-		}
+			if containsVowel(s[:lenWithoutSuffix]) {
+				s = s[:lenWithoutSuffix]
 
-		result = subSlice
+				suffixes := [][]rune{
+					[]rune("at"), []rune("bl"), []rune("iz"), []rune("bb"), []rune("dd"), []rune("ff"), []rune("gg"),
+					[]rune("mm"), []rune("nn"), []rune("pp"), []rune("rr"), []rune("tt"),
+				}
 
-	} else if contains, suffix := hasSuffixes(s, [][]rune{[]rune("ed"), []rune("edly"), []rune("ing"), []rune("ingly")}); contains {
-		suffixLen := len(suffix)
-		subSlice := s
+				if contains, suffix := hasSuffixes(s, suffixes); contains {
+					suffixLen := len(s)
+					lenWithoutSuffix := len(s) - suffixLen
+					suffixInString := string(suffix)
 
-		r1Start, _ := getR1andR2Start(s)
+					if suffixInString == "at" || suffixInString == "bl" || suffixInString == "iz" {
+						s = append(s[:lenWithoutSuffix], []rune(suffixInString+"e")...)
 
-		if containsVowel(s[:lenS-suffixLen]) {
-			//delete the suffix
-			s = s[:lenS-suffixLen]
+						r1Start, r2Start = updateR1R2(len(s), r1Start, r2Start)
+						result = s
 
-			//reset r1Start
-			if r1Start > len(s) {
-				r1Start = len(s)
-			}
+					} else if suffixInString == "bb" || suffixInString == "dd" || suffixInString == "ff" || suffixInString == "gg" || suffixInString == "mm" || suffixInString == "nn" || suffixInString == "pp" || suffixInString == "rr" || suffixInString == "tt" {
+						s = s[:len(s)-1]
 
-			if contains, _ := hasSuffixes(s, [][]rune{[]rune("at"), []rune("bl"), []rune("iz")}); contains {
-				s = append(s, []rune("e")...)
-			} else if contains, _ := hasSuffixes(s, [][]rune{[]rune("bb"), []rune("dd"), []rune("ff"), []rune("gg"), []rune("mm"), []rune("nn"), []rune("pp"), []rune("rr"), []rune("tt")}); contains {
-				s = s[:len(s)-1]
-			} else {
-				if isShortWord(s, r1Start) {
-					s = append(s, []rune("e")...)
+						r1Start, r2Start = updateR1R2(len(s), r1Start, r2Start)
+						result = s
+					}
+				} else {
+					if isShortWord(s, r1Start) {
+						s = append(s, []rune("e")...)
+
+						result = s
+
+						r1Start = len(s)
+						r2Start = len(s)
+
+						return result, r1Start, r2Start
+					}
+				}
+
+				currLen := len(s)
+
+				if orgR1Start < currLen {
+					r1Start = orgR1Start
+				} else {
+					r1Start = currLen
+				}
+
+				if orgR2Start < currLen {
+					r2Start = orgR2Start
+				} else {
+					r2Start = currLen
 				}
 			}
 		}
-
-		result = subSlice
 	}
 
 	// Return.
@@ -138,7 +171,7 @@ func step1c(s []rune, r1Start, r2Start int) ([]rune, int, int) {
 	}
 
 	// Return.
-	return result
+	return result, r1Start, r2Start
 }
 
 func step2(s []rune, r1Start, r2Start int) ([]rune, int, int) {

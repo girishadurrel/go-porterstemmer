@@ -107,66 +107,6 @@ func isConsonant(s []rune, i int) bool {
 	return result
 }
 
-func measure(s []rune) uint {
-
-	// Initialize.
-	lenS := len(s)
-	result := uint(0)
-	i := 0
-
-	// Short Circuit.
-	if 0 == lenS {
-		/////////// RETURN
-		return result
-	}
-
-	// Ignore (potential) consonant sequence at the beginning of word.
-	for isConsonant(s, i) {
-
-		//DEBUG
-		//log.Printf("[measure([%s])] Eat Consonant [%d] -> [%s]", string(s), i, string(s[i]))
-
-		i++
-		if i >= lenS {
-			/////////////// RETURN
-			return result
-		}
-	}
-
-	// For each pair of a vowel sequence followed by a consonant sequence, increment result.
-Outer:
-	for i < lenS {
-
-		for !isConsonant(s, i) {
-
-			//DEBUG
-			//log.Printf("[measure([%s])] VOWEL [%d] -> [%s]", string(s), i, string(s[i]))
-
-			i++
-			if i >= lenS {
-				/////////// BREAK
-				break Outer
-			}
-		}
-		for isConsonant(s, i) {
-
-			//DEBUG
-			//log.Printf("[measure([%s])] CONSONANT [%d] -> [%s]", string(s), i, string(s[i]))
-
-			i++
-			if i >= lenS {
-				result++
-				/////////// BREAK
-				break Outer
-			}
-		}
-		result++
-	}
-
-	// Return
-	return result
-}
-
 func hasSuffixes(s []rune, suffixes [][]rune) (bool, []rune) {
 	for _, suffix := range suffixes {
 		if hasSuffix(s, suffix) {
@@ -217,46 +157,6 @@ func containsVowel(s []rune) bool {
 	}
 
 	return false
-}
-
-func hasRepeatDoubleConsonantSuffix(s []rune) bool {
-
-	// Initialize.
-	lenS := len(s)
-
-	result := false
-
-	// Do it!
-	if 2 > lenS {
-		result = false
-	} else if s[lenS-1] == s[lenS-2] && isConsonant(s, lenS-1) { // Will using isConsonant() cause a problem with "YY"?
-		result = true
-	} else {
-		result = false
-	}
-
-	// Return,
-	return result
-}
-
-func hasConsonantVowelConsonantSuffix(s []rune) bool {
-
-	// Initialize.
-	lenS := len(s)
-
-	result := false
-
-	// Do it!
-	if 3 > lenS {
-		result = false
-	} else if isConsonant(s, lenS-3) && !isConsonant(s, lenS-2) && isConsonant(s, lenS-1) {
-		result = true
-	} else {
-		result = false
-	}
-
-	// Return
-	return result
 }
 
 func getConstIndexAfterVowel(s []rune) int {
