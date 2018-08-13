@@ -1,21 +1,26 @@
 package porterstemmer
 
-func preprocess(s []rune) {
-	normalizeApostrophes(s)
+func preprocess(s []rune) []rune {
+	s = normalizeApostrophes(s)
 	s = trimLeftApostrophes(s)
+
+	return s
 }
 
 //remove all the apostrophes 's or ' at the end
 func step0(s []rune, r1Start, r2Start int) ([]rune, int, int) {
-	suffixWithApos := []string{"'s", "'s'", "'"}
+	lenS := len(s)
 	result := s
 
-	for _, suffix := range suffixWithApos {
-		if isSuffix, index := isSuffix(s, suffix); isSuffix {
-			s = s[:index]
+	suffixes := [][]rune{[]rune("'s'"), []rune("'s"), []rune("'")}
 
-			result = s
-		}
+	if contains, suffix := hasSuffixes(s, suffixes); contains {
+		suffixLen := len(suffix)
+
+		s = s[:lenS-suffixLen]
+
+		r1Start, r2Start = updateR1R2(len(s), r1Start, r2Start)
+		result = s
 	}
 
 	return result, r1Start, r2Start
@@ -27,7 +32,7 @@ func step1a(s []rune, r1Start, r2Start int) ([]rune, int, int) {
 	result := s
 
 	suffixes := [][]rune{
-		[]rune("sses"), []rune("ies"), []rune("ied"), []rune("ss"), []rune("us"),
+		[]rune("sses"), []rune("ied"), []rune("ies"), []rune("us"), []rune("ss"),
 		[]rune("s"),
 	}
 
@@ -109,7 +114,7 @@ func step1b(s []rune, r1Start, r2Start int) ([]rune, int, int) {
 				}
 
 				if contains, suffix := hasSuffixes(s, suffixes); contains {
-					suffixLen := len(s)
+					suffixLen := len(suffix)
 					lenWithoutSuffix := len(s) - suffixLen
 					suffixInString := string(suffix)
 
@@ -128,13 +133,14 @@ func step1b(s []rune, r1Start, r2Start int) ([]rune, int, int) {
 				} else {
 					if isShortWord(s, r1Start) {
 						s = append(s, []rune("e")...)
-
 						result = s
 
 						r1Start = len(s)
 						r2Start = len(s)
 
 						return result, r1Start, r2Start
+					} else {
+						result = s
 					}
 				}
 

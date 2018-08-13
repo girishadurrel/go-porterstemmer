@@ -58,19 +58,23 @@ func stemEngine(s []rune, debug bool) ([]rune, []string) {
 	debugLines := make([]string, 0)
 
 	// Words that are of length 2 or less is already stemmed.
-	// Don't do anything.
 	if lenS <= 2 {
-		/////////// RETURN
 		debugLines = append(debugLines, "input less than 2 runs, return")
 		return s, debugLines
 	}
 
-	// Stem
 	if debug {
 		debugLines = append(debugLines, fmt.Sprintf("input: %s", string(s)))
 	}
 
+	s = preprocess(s)
+	if debug {
+		debugLines = append(debugLines, fmt.Sprintf("after pre-process: %s", string(s)))
+	}
+
+	//calculate the two regions
 	r1Start, r2Start := getR1andR2Start(s)
+
 	if debug {
 		debugLines = append(debugLines, fmt.Sprintf("r1Start: %d r2Start: %d", r1Start, r2Start))
 	}

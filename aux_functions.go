@@ -1,12 +1,14 @@
 package porterstemmer
 
 //replace all different types of apostrophes, with the code point 39 (')
-func normalizeApostrophes(s []rune) {
+func normalizeApostrophes(s []rune) []rune {
 	for index, r := range s {
 		if r == 8217 || r == 8216 || r == 8219 {
 			s[index] = 39
 		}
 	}
+
+	return s
 }
 
 //remove until the first apostrophe is met
@@ -23,11 +25,11 @@ func trimLeftApostrophes(s []rune) []rune {
 }
 
 func isShortWord(s []rune, r1Start int) bool {
-	if r1Start < len(s) || endsShortSyllable(s, len(s)) {
-		return true
+	if r1Start < len(s) {
+		return false
 	}
 
-	return false
+	return endsShortSyllable(s, len(s))
 }
 
 func endsShortSyllable(s []rune, index int) bool {
@@ -118,26 +120,17 @@ func hasSuffixes(s []rune, suffixes [][]rune) (bool, []rune) {
 }
 
 func hasSuffix(s, suffix []rune) bool {
+	lenS := len(s)
+	suffixLen := len(suffix)
 
-	lenSMinusOne := len(s) - 1
-	lenSuffixMinusOne := len(suffix) - 1
-
-	if lenSMinusOne <= lenSuffixMinusOne {
-		return false
-	} else if s[lenSMinusOne] != suffix[lenSuffixMinusOne] { // I suspect checking this first should speed this function up in practice.
-		/////// RETURN
+	if lenS < suffixLen {
 		return false
 	} else {
-
-		for i := 0; i < lenSuffixMinusOne; i++ {
-
-			if suffix[i] != s[lenSMinusOne-lenSuffixMinusOne+i] {
-				/////////////// RETURN
+		for i := 0; i < suffixLen; i++ {
+			if s[lenS-1-i] != suffix[suffixLen-1-i] {
 				return false
 			}
-
 		}
-
 	}
 
 	return true
@@ -190,7 +183,13 @@ func getR1andR2Start(s []rune) (int, int) {
 	//region after the first non-vowel following the first vowel in r1
 	r2Start := len(string(s))
 
-	if returnVal := getConstIndexAfterVowel(s); returnVal > -1 {
+	prefixes := [][]rune{
+		[]rune("gener"), []rune("commun"), []rune("arsen"),
+	}
+
+	if contains, prefix := hasPrefixes(s, prefixes); contains {
+		r1Start = len(prefix)
+	} else if returnVal := getConstIndexAfterVowel(s); returnVal > -1 {
 		r1Start = returnVal
 	}
 
@@ -201,4 +200,31 @@ func getR1andR2Start(s []rune) (int, int) {
 	}
 
 	return r1Start, r2Start
+}
+
+func hasPrefixes(s []rune, prefixes [][]rune) (bool, []rune) {
+	for _, prefix := range prefixes {
+		if hasPrefix(s, prefix) {
+			return true, prefix
+		}
+	}
+
+	return false, nil
+}
+
+func hasPrefix(s []rune, prefix []rune) bool {
+	lenS := len(s)
+	prefixLen := len(prefix)
+
+	if prefixLen > lenS {
+		return false
+	} else {
+		for i := 0; i < prefixLen; i++ {
+			if s[i] != prefix[i] {
+				return false
+			}
+		}
+	}
+
+	return true
 }
