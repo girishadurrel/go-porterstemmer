@@ -1,4 +1,4 @@
-package porterstemmer
+package porterstemmer2
 
 func preprocess(s []rune) []rune {
 	s = normalizeApostrophes(s)

@@ -1,4 +1,4 @@
-package porterstemmer
+package porterstemmer2
 
 import (
 	"fmt"
@@ -7,13 +7,13 @@ import (
 
 type PorterStemmer struct {
 	debug           bool
-	aggrStem        bool
+	partialStem     bool
 	specialStemmMap map[string]string
 }
 
-func (e *PorterStemmer) Init(debug, aggrStem bool, specialStemmMap map[string]string) {
+func (e *PorterStemmer) Init(debug, partialStem bool, specialStemmMap map[string]string) {
 	e.debug = debug
-	e.aggrStem = aggrStem
+	e.partialStem = partialStem
 	e.specialStemmMap = specialStemmMap
 }
 
@@ -50,12 +50,12 @@ func (e *PorterStemmer) Stem(s []rune) ([]rune, []string) {
 		s[i] = unicode.ToLower(s[i])
 	}
 
-	result, debugDetails := stemEngine(s, e.debug)
+	result, debugDetails := stemEngine(s, e.debug, e.partialStem)
 
 	return result, debugDetails
 }
 
-func stemEngine(s []rune, debug bool) ([]rune, []string) {
+func stemEngine(s []rune, debug, partialStem bool) ([]rune, []string) {
 	// Initialize.
 	lenS := len(s)
 	debugLines := make([]string, 0)
@@ -79,7 +79,7 @@ func stemEngine(s []rune, debug bool) ([]rune, []string) {
 	r1Start, r2Start := getR1andR2Start(s)
 
 	if debug {
-		debugLines = append(debugLines, fmt.Sprintf("r1Start: %d r2Start: %d", r1Start, r2Start))
+		debugLines = append(debugLines, fmt.Sprintf("r1 and r2 regions: r1Start: %d r2Start: %d", r1Start, r2Start))
 	}
 
 	s, r1Start, r2Start = step0(s, r1Start, r2Start) // remove all apostrophes
@@ -92,34 +92,36 @@ func stemEngine(s []rune, debug bool) ([]rune, []string) {
 		debugLines = append(debugLines, fmt.Sprintf("after step (1a): %s r1Start: %d r2Start: %d", string(s), r1Start, r2Start))
 	}
 
-	s, r1Start, r2Start = step1b(s, r1Start, r2Start)
-	if debug {
-		debugLines = append(debugLines, fmt.Sprintf("after step (1b): %s r1Start: %d r2Start: %d", string(s), r1Start, r2Start))
-	}
+	if !partialStem {
+		s, r1Start, r2Start = step1b(s, r1Start, r2Start)
+		if debug {
+			debugLines = append(debugLines, fmt.Sprintf("after step (1b): %s r1Start: %d r2Start: %d", string(s), r1Start, r2Start))
+		}
 
-	s, r1Start, r2Start = step1c(s, r1Start, r2Start)
-	if debug {
-		debugLines = append(debugLines, fmt.Sprintf("after step (1c): %s r1Start: %d r2Start: %d", string(s), r1Start, r2Start))
-	}
+		s, r1Start, r2Start = step1c(s, r1Start, r2Start)
+		if debug {
+			debugLines = append(debugLines, fmt.Sprintf("after step (1c): %s r1Start: %d r2Start: %d", string(s), r1Start, r2Start))
+		}
 
-	s, r1Start, r2Start = step2(s, r1Start, r2Start)
-	if debug {
-		debugLines = append(debugLines, fmt.Sprintf("after step (2): %s r1Start: %d r2Start: %d", string(s), r1Start, r2Start))
-	}
+		s, r1Start, r2Start = step2(s, r1Start, r2Start)
+		if debug {
+			debugLines = append(debugLines, fmt.Sprintf("after step (2): %s r1Start: %d r2Start: %d", string(s), r1Start, r2Start))
+		}
 
-	s, r1Start, r2Start = step3(s, r1Start, r2Start)
-	if debug {
-		debugLines = append(debugLines, fmt.Sprintf("after step (3): %s r1Start: %d r2Start: %d", string(s), r1Start, r2Start))
-	}
+		s, r1Start, r2Start = step3(s, r1Start, r2Start)
+		if debug {
+			debugLines = append(debugLines, fmt.Sprintf("after step (3): %s r1Start: %d r2Start: %d", string(s), r1Start, r2Start))
+		}
 
-	s, r1Start, r2Start = step4(s, r1Start, r2Start)
-	if debug {
-		debugLines = append(debugLines, fmt.Sprintf("after step (4): %s r1Start: %d r2Start: %d", string(s), r1Start, r2Start))
-	}
+		s, r1Start, r2Start = step4(s, r1Start, r2Start)
+		if debug {
+			debugLines = append(debugLines, fmt.Sprintf("after step (4): %s r1Start: %d r2Start: %d", string(s), r1Start, r2Start))
+		}
 
-	s, r1Start, r2Start = step5(s, r1Start, r2Start)
-	if debug {
-		debugLines = append(debugLines, fmt.Sprintf("after step (5): %s r1Start: %d r2Start: %d", string(s), r1Start, r2Start))
+		s, r1Start, r2Start = step5(s, r1Start, r2Start)
+		if debug {
+			debugLines = append(debugLines, fmt.Sprintf("after step (5): %s r1Start: %d r2Start: %d", string(s), r1Start, r2Start))
+		}
 	}
 
 	// Return.

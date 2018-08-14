@@ -38,3 +38,4 @@ succeed	succeed
 succeeds	succeed
 succeeded	succeed
 succeeding	succeed
+pampers	pampers

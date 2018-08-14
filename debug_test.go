@@ -1,4 +1,4 @@
-package porterstemmer
+package porterstemmer2
 
 import (
 	"testing"

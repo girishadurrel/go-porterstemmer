@@ -1,4 +1,4 @@
-package porterstemmer
+package porterstemmer2
 
 //replace all different types of apostrophes, with the code point 39 (')
 func normalizeApostrophes(s []rune) []rune {
