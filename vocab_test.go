@@ -29461,12 +29461,6 @@ func Test_EnglishVocabulary(t *testing.T) {
 
 		if string(result) != testCase.out {
 			t.Errorf("Expected %v -> %v, but got %v", testCase.in, testCase.out, string(result))
-
-			//fmt.Println("----------------------------------------------")
-			//for _, item := range debugDetails {
-			//fmt.Println(item)
-			//}
-			//fmt.Println("----------------------------------------------")
 		}
 	}
 }
