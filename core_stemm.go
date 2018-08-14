@@ -367,11 +367,12 @@ func step5(s []rune, r1Start, r2Start int) ([]rune, int, int) {
 				s = s[:lenS-1]
 
 				result = s
-			} else if r2Start <= lenS-1 && s[lenS-1] == 108 && lenS-2 >= 0 && s[lenS-2] == 108 {
-				s = s[:lenS-1]
-
-				result = s
 			}
+
+		} else if r2Start <= lenS-1 && s[lenS-1] == 108 && lenS-2 >= 0 && s[lenS-2] == 108 {
+			s = s[:lenS-1]
+
+			result = s
 		}
 	}
 

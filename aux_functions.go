@@ -45,7 +45,11 @@ func endsShortSyllable(s []rune, index int) bool {
 
 		//check if s1 is precceded by a vowel is already checked
 		if isConsonant(s, index-1) && s1 != 119 && s1 != 120 && !isConsonant(s, index-2) && isConsonant(s, index-3) {
-			return true
+			if s1 == 121 && !isConsonant(s, index-2) { //check if y is preceeded by a vowel
+				return false
+			} else {
+				return true
+			}
 		} else {
 			return false
 		}
@@ -152,13 +156,15 @@ func containsVowel(s []rune) bool {
 	return false
 }
 
-func getConstIndexAfterVowel(s []rune) int {
+//need stat index to check on cases of 'y'
+//'y' before a consonent and 'y' before a vowel behaves differently
+func getConstIndexAfterVowel(s []rune, startIndex int) int {
 	vowelIndex := -1
-	startIndex := -1
+	returnVal := -1
 
-	for index := range s {
-		if !isConsonant(s, index) {
-			vowelIndex = index
+	for index := range s[startIndex:] {
+		if !isConsonant(s, index+startIndex) {
+			vowelIndex = index + startIndex
 			break
 		}
 	}
@@ -167,14 +173,18 @@ func getConstIndexAfterVowel(s []rune) int {
 		if len(s) > vowelIndex+1 {
 			for index := range s[vowelIndex+1:] {
 				if isConsonant(s, index+vowelIndex+1) {
-					startIndex = index + vowelIndex + 1
+					returnVal = index + vowelIndex + 1
 					break
 				}
 			}
 		}
 	}
 
-	return (startIndex + 1) //plus one because region starts after :)
+	if returnVal != -1 && vowelIndex != -1 { //index has been set!!!
+		return (returnVal + 1) //plus one because region starts after :)
+	} else {
+		return -1
+	}
 }
 
 func getR1andR2Start(s []rune) (int, int) {
@@ -189,13 +199,13 @@ func getR1andR2Start(s []rune) (int, int) {
 
 	if contains, prefix := hasPrefixes(s, prefixes); contains {
 		r1Start = len(prefix)
-	} else if returnVal := getConstIndexAfterVowel(s); returnVal > -1 {
+	} else if returnVal := getConstIndexAfterVowel(s, 0); returnVal > -1 {
 		r1Start = returnVal
 	}
 
 	if r1Start+1 < len(s) {
-		if returnVal := getConstIndexAfterVowel(s[r1Start:]); returnVal > -1 {
-			r2Start = returnVal + r1Start
+		if returnVal := getConstIndexAfterVowel(s, r1Start); returnVal > -1 {
+			r2Start = returnVal
 		}
 	}
 

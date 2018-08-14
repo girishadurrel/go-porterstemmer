@@ -6,15 +6,15 @@ import (
 )
 
 type PorterStemmer struct {
-	debug     bool
-	aggrStem  bool
-	ignoreMap map[string]bool
+	debug           bool
+	aggrStem        bool
+	specialStemmMap map[string]string
 }
 
-func (e *PorterStemmer) Init(debug, aggrStem bool, ignoreMap map[string]bool) {
+func (e *PorterStemmer) Init(debug, aggrStem bool, specialStemmMap map[string]string) {
 	e.debug = debug
 	e.aggrStem = aggrStem
-	e.ignoreMap = ignoreMap
+	e.specialStemmMap = specialStemmMap
 }
 
 func (e *PorterStemmer) StemString(s string) (string, []string) {
@@ -36,11 +36,14 @@ func (e *PorterStemmer) Stem(s []rune) ([]rune, []string) {
 	lenS := len(s)
 	debugDetails := make([]string, 0)
 
-	_, doNotStemm := e.ignoreMap[string(s)]
+	specialStemOutput, validSpecialStemmWord := e.specialStemmMap[string(s)]
 
-	if lenS == 0 || doNotStemm {
-		debugDetails = append(debugDetails, fmt.Sprintf("input: %s is in the ignore dict", string(s)))
-		return s, debugDetails
+	if lenS == 0 || validSpecialStemmWord {
+		if e.debug {
+			debugDetails = append(debugDetails, fmt.Sprintf("input: %s is either len 0 or a special stemm word", string(s)))
+		}
+
+		return []rune(specialStemOutput), debugDetails
 	}
 
 	for i := 0; i < lenS; i++ {

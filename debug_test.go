@@ -278,7 +278,7 @@ func Test_Stem(t *testing.T) {
 	}
 
 	stemmer := PorterStemmer{}
-	stemmer.Init(false, false, make(map[string]bool))
+	stemmer.Init(false, false, make(map[string]string))
 
 	for _, tc := range testCases {
 		stemmed, _ := stemmer.Stem([]rune(tc.in))
