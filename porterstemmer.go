@@ -98,11 +98,14 @@ func stemEngine(s []rune, debug, partialStem bool) ([]rune, []string) {
 			debugLines = append(debugLines, fmt.Sprintf("after step (1b): %s r1Start: %d r2Start: %d", string(s), r1Start, r2Start))
 		}
 
-		s, r1Start, r2Start = step1c(s, r1Start, r2Start)
-		if debug {
-			debugLines = append(debugLines, fmt.Sprintf("after step (1c): %s r1Start: %d r2Start: %d", string(s), r1Start, r2Start))
-		}
+	}
 
+	s, r1Start, r2Start = step1c(s, r1Start, r2Start)
+	if debug {
+		debugLines = append(debugLines, fmt.Sprintf("after step (1c): %s r1Start: %d r2Start: %d", string(s), r1Start, r2Start))
+	}
+
+	if !partialStem {
 		s, r1Start, r2Start = step2(s, r1Start, r2Start)
 		if debug {
 			debugLines = append(debugLines, fmt.Sprintf("after step (2): %s r1Start: %d r2Start: %d", string(s), r1Start, r2Start))
