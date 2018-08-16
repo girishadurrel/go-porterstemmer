@@ -2123,7 +2123,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"basements", "basement"},
 		{"baseness", "base"},
 		{"baser", "baser"},
-		{"bases", "base"},
+		//{"bases", "base"},
+		{"bases", "basi"}, //maually changed
 		{"basest", "basest"},
 		{"bashful", "bash"},
 		{"bashfully", "bash"},
@@ -2235,7 +2236,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"beautifullest", "beautifullest"},
 		{"beautifully", "beauti"},
 		{"beauty", "beauti"},
-		{"beaux", "beaux"},
+		//{"beaux", "beaux"},
+		{"beaux", "beau"}, //manually changed
 		{"beaver", "beaver"},
 		{"becalmed", "becalm"},
 		{"became", "becam"},
@@ -3575,7 +3577,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"caciques", "caciqu"},
 		{"cackle", "cackl"},
 		{"cackled", "cackl"},
-		{"cacti", "cacti"},
+		//{"cacti", "cacti"},
+		{"cacti", "cactus"}, //manually changed
 		{"cactornis", "cactorni"},
 		{"cactus", "cactus"},
 		{"cactuses", "cactus"},
@@ -3652,7 +3655,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"calumniously", "calumni"},
 		{"calumny", "calumni"},
 		{"calve", "calv"},
-		{"calves", "calv"},
+		//{"calves", "calv"},
+		{"calves", "calf"}, //manually changed
 		{"camarhynchus", "camarhynchus"},
 		{"camberwell", "camberwel"},
 		{"cambric", "cambric"},
@@ -4313,7 +4317,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"childishness", "childish"},
 		{"childless", "childless"},
 		{"childlike", "childlik"},
-		{"children", "children"},
+		//{"children", "children"},
+		{"children", "child"}, //manually changed
 		{"chile", "chile"},
 		{"chilean", "chilean"},
 		{"chileno", "chileno"},
@@ -6510,7 +6515,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"dastard", "dastard"},
 		{"dastardly", "dastard"},
 		{"dasypus", "dasypus"},
-		{"data", "data"},
+		//{"data", "data"},
+		{"data", "datum"}, //manually changed
 		{"date", "date"},
 		{"dated", "date"},
 		{"dates", "date"},
@@ -8573,7 +8579,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"elude", "elud"},
 		{"eluded", "elud"},
 		{"eluding", "elud"},
-		{"elves", "elv"},
+		//{"elves", "elv"},
+		{"elves", "elf"}, //manually changed
 		{"elwes", "elw"},
 		{"elysian", "elysian"},
 		{"elysium", "elysium"},
@@ -9854,7 +9861,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"feelings", "feel"},
 		{"feels", "feel"},
 		{"fees", "fee"},
-		{"feet", "feet"},
+		//{"feet", "feet"},
+		{"feet", "foot"}, //manually changed
 		{"feign", "feign"},
 		{"feigned", "feign"},
 		{"feigning", "feign"},
@@ -10884,7 +10892,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"funeral", "funer"},
 		{"funerals", "funer"},
 		{"funereal", "funer"},
-		{"fungi", "fungi"},
+		//{"fungi", "fungi"},
+		{"fungi", "fungus"}, //manually changed
 		{"fungus", "fungus"},
 		{"funk", "funk"},
 		{"funnel", "funnel"},
@@ -11111,7 +11120,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"gazing", "gaze"},
 		{"gazingi", "gazingi"},
 		{"gear", "gear"},
-		{"geese", "gees"},
+		//{"geese", "gees"},
+		{"geese", "goos"}, //manually changed
 		{"geist", "geist"},
 		{"gelatinous", "gelatin"},
 		{"gem", "gem"},
@@ -11122,7 +11132,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"genealogist", "genealogist"},
 		{"genelman", "genelman"},
 		{"genelmen", "genelmen"},
-		{"genera", "genera"},
+		//{"genera", "genera"},
+		{"genera", "genus"}, //manually changed
 		{"general", "general"},
 		{"generalities", "general"},
 		{"generality", "general"},
@@ -11985,7 +11996,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"haltica", "haltica"},
 		{"halting", "halt"},
 		{"halts", "halt"},
-		{"halves", "halv"},
+		//{"halves", "halv"},
+		{"halves", "half"}, //manually changed
 		{"ham", "ham"},
 		{"hamilton", "hamilton"},
 		{"hamlet", "hamlet"},
@@ -12963,7 +12975,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"hypocrite", "hypocrit"},
 		{"hypocritical", "hypocrit"},
 		{"hypocritically", "hypocrit"},
-		{"hypotheses", "hypothes"},
+		//{"hypotheses", "hypothes"},
+		{"hypotheses", "hypothesi"}, //manually changed
 		{"hypothesis", "hypothesi"},
 		{"hypothetical", "hypothet"},
 		{"hyseters", "hyset"},
@@ -14661,7 +14674,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"knits", "knit"},
 		{"knitted", "knit"},
 		{"knitting", "knit"},
-		{"knives", "knive"},
+		//{"knives", "knive"},
+		{"knives", "knife"}, //manually changed
 		{"knob", "knob"},
 		{"knobs", "knob"},
 		{"knock", "knock"},
@@ -15006,7 +15020,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"leather", "leather"},
 		{"leathern", "leathern"},
 		{"leave", "leav"},
-		{"leaves", "leav"},
+		//{"leaves", "leav"},
+		{"leaves", "leaf"}, //manually changed
 		{"leaving", "leav"},
 		{"lebanon", "lebanon"},
 		{"leben", "leben"},
@@ -15152,7 +15167,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"librarian", "librarian"},
 		{"libraries", "librari"},
 		{"library", "librari"},
-		{"lice", "lice"},
+		//{"lice", "lice"},
+		{"lice", "lous"}, //manually changed
 		{"licence", "licenc"},
 		{"licences", "licenc"},
 		{"license", "licens"},
@@ -15341,7 +15357,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"liverpool", "liverpool"},
 		{"livers", "liver"},
 		{"livery", "liveri"},
-		{"lives", "live"},
+		//{"lives", "live"},
+		{"lives", "life"}, //manually changed
 		{"livest", "livest"},
 		{"liveth", "liveth"},
 		{"livid", "livid"},
@@ -15376,7 +15393,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"loathing", "loath"},
 		{"loathsome", "loathsom"},
 		{"loathsomeness", "loathsom"},
-		{"loaves", "loav"},
+		//{"loaves", "loav"},
+		{"loaves", "loaf"}, //manually changed
 		{"lobbies", "lobbi"},
 		{"lobby", "lobbi"},
 		{"lobster", "lobster"},
@@ -16242,13 +16260,15 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"memoir", "memoir"},
 		{"memoirs", "memoir"},
 		{"memorable", "memor"},
-		{"memoranda", "memoranda"},
+		//{"memoranda", "memoranda"},
+		{"memoranda", "memorandum"}, //manually changed
 		{"memorandum", "memorandum"},
 		{"memorial", "memori"},
 		{"memorials", "memori"},
 		{"memories", "memori"},
 		{"memory", "memori"},
-		{"men", "men"},
+		//{"men", "men"},
+		{"men", "man"}, //manually changed
 		{"menace", "menac"},
 		{"menacing", "menac"},
 		{"menage", "menag"},
@@ -16350,7 +16370,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"miasma", "miasma"},
 		{"mica", "mica"},
 		{"micaceous", "micac"},
-		{"mice", "mice"},
+		//{"mice", "mice"},
+		{"mice", "mous"}, //manually changed
 		{"michael", "michael"},
 		{"michaelmas", "michaelma"},
 		{"michell", "michel"},
@@ -18135,7 +18156,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"outweigh", "outweigh"},
 		{"outweighed", "outweigh"},
 		{"outweighing", "outweigh"},
-		{"ova", "ova"},
+		//{"ova", "ova"},
+		{"ova", "ovum"}, //manually changed
 		{"oval", "oval"},
 		{"ovarium", "ovarium"},
 		{"ove", "ove"},
@@ -18258,7 +18280,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"owns", "own"},
 		{"owor", "owor"},
 		{"ox", "ox"},
-		{"oxen", "oxen"},
+		//{"oxen", "oxen"},
+		{"oxen", "ox"}, //manually changed to ox
 		{"oxford", "oxford"},
 		{"oxidate", "oxid"},
 		{"oxides", "oxid"},
@@ -18478,7 +18501,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"parent", "parent"},
 		{"parentage", "parentag"},
 		{"parental", "parent"},
-		{"parentheses", "parenthes"},
+		//{"parentheses", "parenthes"},
+		{"parentheses", "parenthesi"}, //manually changed
 		{"parenthesis", "parenthesi"},
 		{"parenthetically", "parenthet"},
 		{"parents", "parent"},
@@ -19091,7 +19115,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"pharisees", "pharise"},
 		{"phases", "phase"},
 		{"pheasants", "pheasant"},
-		{"phenomena", "phenomena"},
+		//{"phenomena", "phenomena"},
+		{"phenomena", "phenomenon"}, //manually changed
 		{"phenomenal", "phenomen"},
 		{"phenomenally", "phenomen"},
 		{"phenomenes", "phenomen"},
@@ -20763,7 +20788,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"radical", "radic"},
 		{"radicalism", "radic"},
 		{"radicals", "radic"},
-		{"radii", "radii"},
+		//{"radii", "radii"},
+		{"radii", "radius"}, // manually changed
 		{"radish", "radish"},
 		{"radishchev", "radishchev"},
 		{"radishes", "radish"},
@@ -22978,7 +23004,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"selling", "sell"},
 		{"sellings", "sell"},
 		{"sells", "sell"},
-		{"selves", "selv"},
+		//{"selves", "selv"},
+		{"selves", "self"}, //manually changed
 		{"semblance", "semblanc"},
 		{"semblances", "semblanc"},
 		{"semi", "semi"},
@@ -23263,7 +23290,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"sheltered", "shelter"},
 		{"sheltering", "shelter"},
 		{"shelters", "shelter"},
-		{"shelves", "shelv"},
+		//{"shelves", "shelv"},
+		{"shelves", "shelf"}, //manually changed
 		{"shelving", "shelv"},
 		{"shepherd", "shepherd"},
 		{"shepherdess", "shepherdess"},
@@ -24940,7 +24968,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"strap", "strap"},
 		{"strapped", "strap"},
 		{"straps", "strap"},
-		{"strata", "strata"},
+		//{"strata", "strata"},
+		{"strata", "stratum"}, //manually changed
 		{"stratagem", "stratagem"},
 		{"strategy", "strategi"},
 		{"stratford", "stratford"},
@@ -25843,7 +25872,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"teeming", "teem"},
 		{"teems", "teem"},
 		{"teens", "teen"},
-		{"teeth", "teeth"},
+		//{"teeth", "teeth"},
+		{"teeth", "tooth"}, //manually changed
 		{"tehuelches", "tehuelch"},
 		{"tekenika", "tekenika"},
 		{"telegram", "telegram"},
@@ -26070,7 +26100,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"theristicus", "theristicus"},
 		{"thermometer", "thermomet"},
 		{"thes", "thes"},
-		{"these", "these"},
+		//{"these", "these"},
+		{"these", "this"}, //manually changed
 		{"they", "they"},
 		{"thi", "thi"},
 		{"thick", "thick"},
@@ -26086,7 +26117,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"thief", "thief"},
 		{"thier", "thier"},
 		{"thieved", "thiev"},
-		{"thieves", "thiev"},
+		//{"thieves", "thiev"},
+		{"thieves", "thief"}, //manually changed
 		{"thigh", "thigh"},
 		{"thighs", "thigh"},
 		{"thimble", "thimbl"},
@@ -26135,7 +26167,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"thoroughfares", "thoroughfar"},
 		{"thoroughgoing", "thoroughgo"},
 		{"thoroughly", "thorough"},
-		{"those", "those"},
+		//{"those", "those"},
+		{"those", "this"}, // manually changed
 		{"thot", "thot"},
 		{"thou", "thou"},
 		{"though", "though"},
@@ -29039,7 +29072,8 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"wittily", "wittili"},
 		{"wittles", "wittl"},
 		{"witty", "witti"},
-		{"wives", "wive"},
+		//{"wives", "wive"},
+		{"wives", "wife"}, //manually changed
 		{"wizard", "wizard"},
 		{"wizened", "wizen"},
 		{"wlll", "wlll"},
@@ -29060,13 +29094,15 @@ func Test_EnglishVocabulary(t *testing.T) {
 		{"wolgan", "wolgan"},
 		{"wollaston", "wollaston"},
 		{"wolsey", "wolsey"},
-		{"wolves", "wolv"},
+		//{"wolves", "wolv"},
+		{"wolves", "wolf"}, // manually changed
 		{"woman", "woman"},
 		{"womanhood", "womanhood"},
 		{"womanish", "womanish"},
 		{"womankind", "womankind"},
 		{"womanly", "woman"},
-		{"women", "women"},
+		//{"women", "women"},
+		{"women", "woman"}, // manually changed
 		{"won", "won"},
 		{"wonder", "wonder"},
 		{"wondered", "wonder"},
@@ -29432,7 +29468,7 @@ func Test_EnglishVocabulary(t *testing.T) {
 	}
 
 	specialStemmMap := make(map[string]string)
-	dataFile, err := os.Open("en_ignore_stemm.txt")
+	dataFile, err := os.Open("en_special_stemm.txt")
 
 	if err != nil {
 		panic(err)
