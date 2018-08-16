@@ -56,10 +56,10 @@ func Test_partialStemm(t *testing.T) {
 		{"series", "seri"},
 		{"species", "speci"},
 		{"berries", "berri"},
-		//should stemm to activ, on partial stemm but need step3 to active.
-		//therefore left as a failed test, activing step3 would cause non nouns
-		//to be stemmed. therefore will keep it as it is, where it will stemm to
-		//activiti
+		//should stemm to "activ" on partial stemm, but need step3 to be active.
+		//therefore left as a failed test as activing step3 would cause non nouns
+		//to be stemmed. therefore will keep it as it is. the output will
+		//therefore be activiti
 		// -------------------- failed test case -------------------- //
 		{"activities", "activ"},
 		// -------------------- failed test case -------------------- //
